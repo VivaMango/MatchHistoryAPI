@@ -11,13 +11,14 @@ var config = {
 
   var database = firebase.database();
 
+  var RiotAPIKey = "RGAPI-748b9a73-c6b0-4090-931e-d27e20f36b45"  //Mr Medusa Riot API Key goes here
+
 
 
   //uses user name input to search Riot for encrypted account ID
   $("#inputSubmit").on("click" , function () {
   event.preventDefault()
   var nameInput = $("#nameInput").val().trim()
-  var RiotAPIKey = "RGAPI-748b9a73-c6b0-4090-931e-d27e20f36b45" //Mr Medusa Riot API Key goes here
   var queryURL = `https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${nameInput}?api_key=${RiotAPIKey}` 
   $.ajax({ 
       url: queryURL, 
@@ -31,6 +32,29 @@ var config = {
 });
 
 
+function selectGameByID() {
+  $(".gameIDBtn").off()
+  $(".gameIDBtn").on("click" , function () {
+    var gameBtnEvent = event.currentTarget
+    var gameIDData = $(gameBtnEvent).data("gameid")
+    console.log(gameIDData , "gameIDData")
+    matchDataRequest(gameIDData)
+  })
+}
+
+function matchDataRequest(gameID) {
+  var matchDataQueryURL = `https://na1.api.riotgames.com/lol/match/v4/matches/${gameID}?api_key=${RiotAPIKey}`
+  $.ajax({ 
+    url: matchDataQueryURL, 
+    method: "GET" 
+  }).then(function(response) {
+    console.log(response , `Riot ${gameID} response`)
+    })
+  }
+
+
+
+
 // uses accountID from user name input to search match history
 function getSummonerMatches(apikey , encryptedAccountID) {
   var matchQueryURL = `https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/${encryptedAccountID}?api_key=${apikey}`
@@ -42,6 +66,7 @@ function getSummonerMatches(apikey , encryptedAccountID) {
     var matchResponse = response.matches
     matchResponse.forEach(function(element){
       createMatchTable(element)
+      selectGameByID() //maybe move to prevent duplication thing
     })
   });
 };
@@ -50,13 +75,8 @@ function getSummonerMatches(apikey , encryptedAccountID) {
 //Generates table of match information
 function createMatchTable(eachMatch) {
     var champName = getChampNamebyID(eachMatch.champion)
-    console.log(champName , "champName")
-    console.log(eachMatch.gameId , "gameID") 
-    console.log(eachMatch.lane , "lane")
     var laneInput = supportFilter(eachMatch.lane)
-    console.log(laneInput , "laneInput")
     var queueType = getQueueType(eachMatch.queue)
-    console.log(queueType)
     matchRowGenerator(champName , laneInput , queueType , eachMatch.gameId)
 }
 
@@ -64,12 +84,20 @@ function createMatchTable(eachMatch) {
 //Generates one row of match information
 function matchRowGenerator(matchChampion , lane , queue , matchGameID) {
   var newRow = $("<tr>")
-  var dataArray = [matchChampion , lane , queue , matchGameID]
+  var gameButton = $("<button>")
+  gameButton.attr("type" , "button")
+  gameButton.attr("id" , "")
+  gameButton.addClass("gameIDBtn")
+  gameButton.addClass("btn btn-primary")
+  gameButton.text("Select Match")
+  gameButton.data("gameid" , matchGameID)
+  var dataArray = [matchChampion , lane , queue , gameButton]
   dataArray.forEach(function(element) {
     var newData = $("<td>")
-        newData.text(element)
+        newData.html(element)
         newRow.append(newData)
   })
+
   $("#tableBody").append(newRow)
 }
 
