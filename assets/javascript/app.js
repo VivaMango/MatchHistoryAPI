@@ -11,9 +11,7 @@ var config = {
 
   var database = firebase.database();
 
-  var RiotAPIKey = "RGAPI-748b9a73-c6b0-4090-931e-d27e20f36b45"  //Mr Medusa Riot API Key goes here
-
-
+  var RiotAPIKey = "RGAPI-f4f7d1cd-a77c-4989-b740-ef318da86e07"  //Mr Medusa Riot API Key goes here
 
   //uses user name input to search Riot for encrypted account ID
   $("#inputSubmit").on("click" , function () {
@@ -32,28 +30,62 @@ var config = {
 });
 
 
-function selectGameByID() {
-  $(".gameIDBtn").off()
+function selectGameByID(encryptedAccountID) {
+  // $(".gameIDBtn").off()
   $(".gameIDBtn").on("click" , function () {
     var gameBtnEvent = event.currentTarget
     var gameIDData = $(gameBtnEvent).data("gameid")
     console.log(gameIDData , "gameIDData")
-    matchDataRequest(gameIDData)
+    matchDataRequest(gameIDData , encryptedAccountID)
   })
 }
 
-function matchDataRequest(gameID) {
+
+function matchDataPopulation(pID) {
+  var winBoolean = response.participants[(pID -1 )].stats.win
+  var killCount = response.participants[(pID -1 )].stats.kills
+  var assistCount = response.participants[(pID -1 )].stats.assists
+  var deathCount = response.participants[(pID -1 )].stats.deaths
+  $("#assistSpan").text(assistCount)
+  $("#deathSpan").text(deathCount)
+  $("#killSpan").text(killCount)
+}
+
+
+
+function matchDataRequest(gameID , encryptedAccountID) {
   var matchDataQueryURL = `https://na1.api.riotgames.com/lol/match/v4/matches/${gameID}?api_key=${RiotAPIKey}`
   $.ajax({ 
     url: matchDataQueryURL, 
     method: "GET" 
   }).then(function(response) {
     console.log(response , `Riot ${gameID} response`)
+    console.log(response.participantIdentities , "participantIds")
+    participantArray = response.participantIdentities
+    // findTarget = encryptedAccountID
+    // var partID = participantFinder(participantArray , findParticipantbyAcctID)
+    // console.log(partID , "partID")
+    var searchParticipantID = participantArray.find(function(element) {
+        return element.player.accountId === encryptedAccountID
+      })
+    console.log(searchParticipantID , "searchParticipantID")
+    var foundParticipantID = searchParticipantID.participantId 
+    console.log(foundParticipantID , "foundParticipantID")
+    return foundParticipantID
+    // var winBoolean = response.participants[(foundParticipantID - 1)].stats.win
+    // console.log(winBoolean , "winBoolean")
     })
   }
 
+//findtarget is undefined
+// function findParticipantbyAcctID(el) {
+//   return el.player.accountId === findTarget 
+// }
 
-
+// function participantFinder(arr , fn) {
+//   console.log(arr , "arr in pF")
+//   arr.find(fn)
+// }
 
 // uses accountID from user name input to search match history
 function getSummonerMatches(apikey , encryptedAccountID) {
@@ -66,8 +98,8 @@ function getSummonerMatches(apikey , encryptedAccountID) {
     var matchResponse = response.matches
     matchResponse.forEach(function(element){
       createMatchTable(element)
-      selectGameByID() //maybe move to prevent duplication thing
     })
+    selectGameByID(encryptedAccountID)
   });
 };
 
@@ -127,6 +159,8 @@ function getQueueType(queuevalue) {
 // Converts champion ID to champion name
 function getChampNamebyID(champID) {
   switch (champID) {
+    case 516:
+      return "Ornn";
     case 266:
       return "Aatrox"; 
     case 412: 
