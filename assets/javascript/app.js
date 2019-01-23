@@ -11,7 +11,7 @@ var config = {
 
   var database = firebase.database();
 
-  var RiotAPIKey = "RGAPI-f4f7d1cd-a77c-4989-b740-ef318da86e07"  //Mr Medusa Riot API Key goes here
+  var RiotAPIKey = "RGAPI-d6763bf4-d895-4a3e-8e05-beebb6e2d947"  //Mr Medusa Riot API Key goes here
 
   //uses user name input to search Riot for encrypted account ID
   $("#inputSubmit").on("click" , function () {
@@ -36,19 +36,37 @@ function selectGameByID(encryptedAccountID) {
     var gameBtnEvent = event.currentTarget
     var gameIDData = $(gameBtnEvent).data("gameid")
     console.log(gameIDData , "gameIDData")
+    $("#matchIDSpan").text(gameIDData)
     matchDataRequest(gameIDData , encryptedAccountID)
   })
 }
 
 
-function matchDataPopulation(pID) {
-  var winBoolean = response.participants[(pID -1 )].stats.win
-  var killCount = response.participants[(pID -1 )].stats.kills
-  var assistCount = response.participants[(pID -1 )].stats.assists
-  var deathCount = response.participants[(pID -1 )].stats.deaths
+function matchDataPopulation(matchResponse , pID) {
+  var winBoolean = matchResponse.participants[(pID -1 )].stats.win
+  var killCount = matchResponse.participants[(pID -1 )].stats.kills
+  var assistCount = matchResponse.participants[(pID -1 )].stats.assists
+  var deathCount = matchResponse.participants[(pID -1 )].stats.deaths
   $("#assistSpan").text(assistCount)
   $("#deathSpan").text(deathCount)
   $("#killSpan").text(killCount)
+  console.log(winBoolean , "winBoolean")
+  if (winBoolean === true) {
+    $("#matchDataHolder").attr("class" , "card border-success")
+  } else if (winBoolean === false) {
+    $("#matchDataHolder").attr("class" , "card border-danger")
+  }
+  var winDisplay = winBooleanConverter(winBoolean)
+  console.log(winDisplay , "winDisplay")
+  $("#winLossDisplay").text(winDisplay)
+}
+
+function winBooleanConverter(wB) {
+  if (wB === true) {
+    return "Win"
+  } else if (wB === false) {
+    return "Loss"
+  }
 }
 
 
@@ -71,7 +89,8 @@ function matchDataRequest(gameID , encryptedAccountID) {
     console.log(searchParticipantID , "searchParticipantID")
     var foundParticipantID = searchParticipantID.participantId 
     console.log(foundParticipantID , "foundParticipantID")
-    return foundParticipantID
+    matchDataPopulation(response , foundParticipantID)
+    // return foundParticipantID
     // var winBoolean = response.participants[(foundParticipantID - 1)].stats.win
     // console.log(winBoolean , "winBoolean")
     })
