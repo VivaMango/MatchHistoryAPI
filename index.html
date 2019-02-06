@@ -19,11 +19,30 @@
 
 </head>
 <body>
+    <!-- NavBar to hold Login/Auth containers -->
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">
+            <img src="assets/images/arroba_yellow.png" width="30" height="30" alt="">
+        </a>
+        <form class="form-inline">
+            <div class="input-group">
+                <input id="usernameInput" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                <input id="passwordInput" type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+                <button id="loginBtn" class="btn btn-warning" type="button">Log In</button>
+                <button id="signupBtn" class="btn btn-outline-warning" type="button">Sign Up</button>
+                <button id="logoutBtn" class="btn btn-outline-danger" type="button">Log Out</button>
+            </div>
+        </form>
+    </nav>
+
+
+
+
 
     <!-- Bootstrap Jumbotron acting as our app header. -->
     <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-4"><img id="mainlogo" src="assets/images/workinglogo.png" alt="logo">Welcome to the MatchHistoryAPI!</h1> <!-- Link is WORKING -->
+                <h1 class="display-4"><img id="mainlogo" src="assets/images/arroba_yellow.png" alt="logo">Welcome to the MatchHistoryAPI!</h1> <!-- Link is WORKING -->
                 <form class="inputForm">
                     <input id="nameInput" type="text" name="nameInput"></input>
                     <!-- <input id="roleInput" type="text" name="titleInput"></input>
@@ -39,7 +58,7 @@
         <div class="card-body">
           <h5 id="winLossDisplay" class="card-title"></h5>
           <p id="kdatest" class="card-text"><span id="killSpan"></span>/<span id="deathSpan"></span>/<span id="assistSpan"></span></p>
-          <a id="commentMatchBtn" href="#" class="btn btn-primary">Comment this match</a>
+          <a id="commentMatchBtn" href="#" class="btn btn-warning">Comment this match</a>
         </div>
       </div>
 

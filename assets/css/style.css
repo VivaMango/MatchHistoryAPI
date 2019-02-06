@@ -1,4 +1,7 @@
 #mainlogo {
     width: 10%;
-    height: 10%;
+}
+
+#inputForm {
+    vertical-align: middle;
 }

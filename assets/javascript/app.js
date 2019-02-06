@@ -11,10 +11,36 @@ var config = {
 
   var database = firebase.database();
 
-  var RiotAPIKey = "RGAPI-d6763bf4-d895-4a3e-8e05-beebb6e2d947"  //Mr Medusa Riot API Key goes here
+  var RiotAPIKey = "RGAPI-b9f424c6-665b-4812-8da4-67f68a97461a"  //Mr Medusa Riot API Key goes here
 
-  //uses user name input to search Riot for encrypted account ID
-  $("#inputSubmit").on("click" , function () {
+//Firebase Login Stuff Below
+
+$("#loginBtn").on("click" , function () {
+  var loginEmail = $("#usernameInput").val().trim()
+  var loginPass = $("#passwordInput").val().trim()
+  var auth = firebase.auth()
+  console.log(`Login User: ${loginEmail} with Pass: ${loginPass}`)
+  var promise = auth.signInWithEmailAndPassword(loginEmail , loginPass)
+  promise.catch(e => console.log(e.message))
+  // auth.signInWithEmailAndPassword(loginEmail , loginPass).then(
+    //successFn).catch(errFn)
+})
+
+$("#signupBtn").on("click" , function () {
+  var loginEmail = $("#usernameInput").val().trim()
+  var loginPass = $("#passwordInput").val().trim()
+  var auth = firebase.auth()
+  console.log(`Create User: ${loginEmail} with Pass: ${loginPass}`)
+  var promise = auth.createUserWithEmailAndPassword(loginEmail , loginPass)
+  promise.catch(e => console.log(e.message))
+  // auth.signInWithEmailAndPassword(loginEmail , loginPass).then(
+    //successFn).catch(errFn)
+})
+
+//Firebase Login Stuff Above
+
+//uses user name input to search Riot for encrypted account ID
+$("#inputSubmit").on("click" , function () {
   event.preventDefault()
   var nameInput = $("#nameInput").val().trim()
   var queryURL = `https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${nameInput}?api_key=${RiotAPIKey}` 
@@ -29,7 +55,6 @@ var config = {
   });
 });
 
-
 function selectGameByID(encryptedAccountID) {
   // $(".gameIDBtn").off()
   $(".gameIDBtn").on("click" , function () {
@@ -40,7 +65,6 @@ function selectGameByID(encryptedAccountID) {
     matchDataRequest(gameIDData , encryptedAccountID)
   })
 }
-
 
 function matchDataPopulation(matchResponse , pID) {
   var winBoolean = matchResponse.participants[(pID -1 )].stats.win
@@ -61,6 +85,7 @@ function matchDataPopulation(matchResponse , pID) {
   $("#winLossDisplay").text(winDisplay)
 }
 
+//converts true/false win boolean to Win or Loss strings for display
 function winBooleanConverter(wB) {
   if (wB === true) {
     return "Win"
@@ -68,8 +93,6 @@ function winBooleanConverter(wB) {
     return "Loss"
   }
 }
-
-
 
 function matchDataRequest(gameID , encryptedAccountID) {
   var matchDataQueryURL = `https://na1.api.riotgames.com/lol/match/v4/matches/${gameID}?api_key=${RiotAPIKey}`
@@ -106,7 +129,7 @@ function matchDataRequest(gameID , encryptedAccountID) {
 //   arr.find(fn)
 // }
 
-// uses accountID from user name input to search match history
+// uses accountID from user name input to search match history TODO MAKE A METHOD?
 function getSummonerMatches(apikey , encryptedAccountID) {
   var matchQueryURL = `https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/${encryptedAccountID}?api_key=${apikey}`
   $.ajax({ 
@@ -123,7 +146,7 @@ function getSummonerMatches(apikey , encryptedAccountID) {
 };
 
 
-//Generates table of match information
+//Generates table of match information TODO CONSTRUCTORIZE?
 function createMatchTable(eachMatch) {
     var champName = getChampNamebyID(eachMatch.champion)
     var laneInput = supportFilter(eachMatch.lane)
@@ -132,14 +155,14 @@ function createMatchTable(eachMatch) {
 }
 
 
-//Generates one row of match information
+//Generates one row of match information TODO CONSTRUCTORIZE?
 function matchRowGenerator(matchChampion , lane , queue , matchGameID) {
   var newRow = $("<tr>")
   var gameButton = $("<button>")
   gameButton.attr("type" , "button")
   gameButton.attr("id" , "")
   gameButton.addClass("gameIDBtn")
-  gameButton.addClass("btn btn-primary")
+  gameButton.addClass("btn btn-warning")
   gameButton.text("Select Match")
   gameButton.data("gameid" , matchGameID)
   var dataArray = [matchChampion , lane , queue , gameButton]
@@ -161,7 +184,6 @@ function supportFilter(lane) {
   }
 }
 
-
 // Converts queue ID to queue name
 function getQueueType(queuevalue) {
   if (queuevalue === 400) {
@@ -170,6 +192,8 @@ function getQueueType(queuevalue) {
     return "Ranked Flex"
   } else if (queuevalue === 420) {
     return "Ranked Solo/Duo"
+  } else if (queuevalue === 900) {
+    return "ARURF"
   } else {
     return "Unknown Queue Type"
   }
@@ -178,6 +202,8 @@ function getQueueType(queuevalue) {
 // Converts champion ID to champion name
 function getChampNamebyID(champID) {
   switch (champID) {
+    case 141:
+      return "Kayn";
     case 516:
       return "Ornn";
     case 266:
