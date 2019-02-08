@@ -37,6 +37,24 @@ $("#signupBtn").on("click" , function () {
     //successFn).catch(errFn)
 })
 
+$("#logoutBtn").on("click" , function () {
+  var loginEmail = $("#usernameInput").val().trim()
+  var loginPass = $("#passwordInput").val().trim()
+  var auth = firebase.auth()
+  console.log(`Logout User: ${loginEmail}`)
+  auth.signOut()
+})
+
+firebase.auth().onAuthStateChanged(firebaseUser => {
+  if (firebaseUser) {
+    console.log(firebaseUser , "firebaseUser")
+    $("#logoutBtn").removeClass("invisible")
+  } else {
+    console.log(`No firebaseUser logged in`)
+    $("#logoutBtn").addClass("invisible")
+  }
+}) 
+
 //Firebase Login Stuff Above
 
 //uses user name input to search Riot for encrypted account ID

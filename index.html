@@ -30,7 +30,7 @@
                 <input id="passwordInput" type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
                 <button id="loginBtn" class="btn btn-warning" type="button">Log In</button>
                 <button id="signupBtn" class="btn btn-outline-warning" type="button">Sign Up</button>
-                <button id="logoutBtn" class="btn btn-outline-danger" type="button">Log Out</button>
+                <button id="logoutBtn" class="btn btn-outline-danger invisible" type="button">Log Out</button>
             </div>
         </form>
     </nav>
@@ -42,13 +42,13 @@
     <!-- Bootstrap Jumbotron acting as our app header. -->
     <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-4"><img id="mainlogo" src="assets/images/arroba_yellow.png" alt="logo">Welcome to the MatchHistoryAPI!</h1> <!-- Link is WORKING -->
+                <h1 class="display-4"><img id="mainlogo" src="assets/images/arroba_yellow.png" alt="logo">Welcome to matCH@!</h1> <!-- Link is WORKING -->
                 <form class="inputForm">
                     <input id="nameInput" type="text" name="nameInput"></input>
                     <!-- <input id="roleInput" type="text" name="titleInput"></input>
                     <input id="startInput" type="text" name="dateInput"></input>
                     <input id="rateInput" type="text" name="payInput"></input> -->
-                    <input id="inputSubmit" type="submit" value="Summoner Name"></input>
+                    <button id="inputSubmit" class="btn btn-warning" type="button" value="Summoner Name">Summoner Name</button>
                 </form>
             </div>
         </div>
@@ -58,7 +58,7 @@
         <div class="card-body">
           <h5 id="winLossDisplay" class="card-title"></h5>
           <p id="kdatest" class="card-text"><span id="killSpan"></span>/<span id="deathSpan"></span>/<span id="assistSpan"></span></p>
-          <a id="commentMatchBtn" href="#" class="btn btn-warning">Comment this match</a>
+          <a id="commentMatchBtn" href="#" class="btn btn-warning">CH@ this match</a>
         </div>
       </div>
 
